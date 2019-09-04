@@ -1,0 +1,75 @@
+#!/bin/sh
+
+WWW_DIR=/etc/config/addons/www/phonemuter
+CONFIG_URL=/addons/phonemuter
+PSPID=`ps -o pid,comm | awk '{if($2=="dtach"){print $1}}'`
+
+Start () {
+  echo -n "Starting Phone-Muter: "
+  if [ ! -e /www/config/phonemuter ]; then
+    mount -o remount,rw /
+    ln -s $WWW_DIR /www/config/phonemuter
+    mount -o remount,ro /
+  fi
+  # Start SIP Phone pjsua using dtach.
+  cd ${WWW_DIR}
+  ./dtach -n /tmp/foozle ./pjsua --config-file ./pjsip.cfg --log-file=/var/log/pjsua.log --log-level=4
+  ln -s /var/log/pjsua.log 2>/dev/null
+  cd -
+  echo "OK"
+}
+
+Stop () {
+  echo -n "Stopping Phone-Muter: "
+  if [ "$PSPID" != "" ]
+    then
+      kill $1 $PSPID 2>/dev/null
+      sleep 1
+      kill -0 $PSPID 2>/dev/null
+      if [ $? -eq 0 ]
+      then
+        sleep 10
+        kill -KILL $PSPID 2>/dev/null
+      fi
+      logger -t homematic -p user.info "stopped Phone-Muter"
+    fi
+    rm /tmp/foozle 2>/dev/null
+    echo "OK"
+}
+
+case "$1" in
+""|init|start)
+  Start
+  ;;
+
+stop)
+  Stop -TERM
+  ;;
+
+restart)
+  Stop -HUP
+  Start
+  ;;
+
+info)
+  VER=`cat ${WWW_DIR}/VERSION`
+  echo "Info: <b>Phone Muter Addon</b><br>"
+  echo "Info: <a href='https://github.com/timostr/phoneMuter'>https://github.com/timostr/phoneMuter</a>"
+  echo "Version: $(cat ${WWW_DIR}/VERSION)"
+  echo "Name: Phone-Muter"
+  echo "Operations: uninstall restart"
+  echo "Config-Url: ${CONFIG_URL}"
+  echo "Update: ${CONFIG_URL}/update-check.cgi"
+  ;;
+uninstall)
+  Stop -KILL
+  if [ -e /www/config/phonemuter ]; then
+    mount -o remount,rw /
+    rm -f /www/config/phonemuter
+    mount -o remount,ro /
+  fi
+  rm -rf $WWW_DIR
+  rm -rf /var/log/pjsua
+  rm -rf ./phone-muter
+  ;;
+esac

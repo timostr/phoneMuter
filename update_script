@@ -1,0 +1,61 @@
+#!/bin/sh
+
+ADDON_DIR=/usr/local/etc/config/addons/www/phonemuter
+RCD_DIR=/usr/local/etc/config/rc.d
+CONFIG_DIR=/usr/local/etc/config
+
+if [ "$1" = "" ]; then
+  echo "CCU1"
+  lcdtool "installing PhoneMuter"
+  mount -t yaffs /dev/mtdblock3 /usr/local
+elif [ "$1" = "CCU2" ]; then
+  echo "CCU2"
+  mount -t ubifs ubi1:user /usr/local
+elif [ "$1" = "HM-RASPBERRYMATIC" ]; then
+  echo "HM-RASPBERRYMATIC"
+  mount /usr/local
+fi
+
+mkdir -p $ADDON_DIR
+chmod 755 $ADDON_DIR
+mkdir -p $RCD_DIR
+chmod 755 $RCD_DIR
+
+# remove old stuff
+cp $ADDON_DIR/pjsip.cfg /tmp/pjsip.cfg
+rm -f $ADDON_DIR/*
+
+# copy all stuff and setup rc.d
+cp -R phonemuter/* $ADDON_DIR/
+mv /tmp/pjsip.cfg $ADDON_DIR/pjsip.cfg
+cp VERSION $ADDON_DIR/
+cp phone-muter $RCD_DIR/
+chmod +x $RCD_DIR/phone-muter
+
+# sync filesystem to make sure all changes are written to disk
+sync
+
+if [ "$1" = "" ]; then
+  echo "CCU1"
+  lcdtool "Reboot...             "
+  lcdtool -a 0x40 -t bin 00
+  echo "x" > /dev/watchdog
+  reboot
+  while true ; do true ;  done
+elif [ "$1" = "CCU2" ]; then
+  echo "CCU2"
+  # CCU2 always reboots after Addon/Firmware Update
+elif [ "$1" = "HM-RASPBERRYMATIC" ]; then
+  echo "HM-RASPBERRYMATIC"
+  # RASPBERRYMATIC always reboots after Addon/Firmware Update
+fi
+
+# restart phone-muter
+$RCD_DIR/phone-muter stop
+$RCD_DIR/phone-muter start
+
+# all CCUs perform a reboot after installing
+# addons via WebUI.
+exit 0
+
+
