@@ -69,7 +69,7 @@ uninstall)
     mount -o remount,ro /
   fi
   rm -rf $WWW_DIR
-  rm -rf /var/log/pjsua
+  rm -rf /var/log/pjsua.log
   rm -rf ./phone-muter
   ;;
 esac
