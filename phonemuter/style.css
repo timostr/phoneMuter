@@ -1,0 +1,17 @@
+hmtl, body {
+	background-color: #182c6e;
+	font-family: verdana;
+	font-size: 12pt;
+	color: white;
+}
+
+table {
+	background-color: #9ba6bf;
+	border: 2px solid black;
+	color: black;
+}
+
+input {
+	width: 150px;
+}
+

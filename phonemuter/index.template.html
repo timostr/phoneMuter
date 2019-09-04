@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset=utf-8>
+	<title>Phone-Muter Configuration</title>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+	<h1>Phone-Muter</h1>
+	
+	<form action="index.cgi" method="get">
+		<input type="hidden" name="command" value="save" />
+		<table>
+			<tr><td>SIP id:</td><td><input id="sip_id" name="sip_id" type="text"" value="<%sip_id%>"/></td></tr>
+			<tr><td>Registrar:</td><td><input id="registrar" name="registrar" type="text" value="<%registrar%>" /></td></tr>
+			<tr><td>Realm:</td><td><input id="realm" name="realm" type="text" value="<%realm%>" /></td></tr>
+			<tr><td>Username:</td><td><input id="username" name="username" type="text" value="<%username%>" /></td></tr>
+			<tr><td>Password:</td><td><input id="password" name="password" type="password" value="<%password%>" /></td></tr> 
+			<tr><th>&nbsp;</th><td><input type="submit" value="Save configuration" /></td></tr>
+		</table>
+	</form>
+        <h2>Logfile from SIP-Phone</h2>
+	<iframe src="pjsua.log" style="background: #FFFFFF;" width="100%" height="400p
+x" scrolling="auto">
+    	</iframe>
+
+</body>
+</html>
