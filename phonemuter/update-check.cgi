@@ -1,7 +1,7 @@
 #!/bin/tclsh
 
 set checkURL    "https://raw.githubusercontent.com/timostr/phoneMuter/master/VERSION"
-set downloadURL "https://github.com/timostr/phoneMuter/releases/tag/latest"
+set downloadURL "https://github.com/timostr/phoneMuter/releases/latest"
 
 catch {
   set input $env(QUERY_STRING)
