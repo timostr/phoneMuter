@@ -13,7 +13,7 @@ Start () {
   fi
   # Start SIP Phone pjsua using dtach.
   cd ${WWW_DIR}
-  ./dtach -n /tmp/foozle ./pjsua --config-file ./pjsip.cfg --log-file=/var/log/pjsua.log --log-level=3
+  ./dtach -n /tmp/foozle ./pjsua --config-file ./pjsip.cfg --log-file=/var/log/pjsua.log --log-level=3 --null-audio
   ln -s /var/log/pjsua.log 2>/dev/null
   cd -
   echo "OK"
